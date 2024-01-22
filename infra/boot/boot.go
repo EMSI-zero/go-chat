@@ -35,7 +35,7 @@ func LoadEnv() (err error) {
 	}
 
 	//check for test environment
-	if "test" != env {
+	if env != "test" {
 		log.Print("loading local environments")
 		err = godotenv.Load(".env.local")
 	}
