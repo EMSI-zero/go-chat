@@ -1,5 +1,11 @@
 package contact
 
-type ContactService interface{
-
+type ContactService interface {
+	mustImplementBaseService()
+	// TODO: Add methods
 }
+
+
+type UnImplementedContactService struct{}
+
+func (UnImplementedContactService) mustImplementBaseService(){}
