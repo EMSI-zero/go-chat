@@ -4,6 +4,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/EMSI-zero/go-chat/infra/colrepo"
+	"github.com/EMSI-zero/go-chat/infra/dbrepo"
+	"github.com/EMSI-zero/go-chat/registry"
 	"github.com/joho/godotenv"
 )
 
@@ -39,6 +42,25 @@ func LoadEnv() (err error) {
 		log.Print("loading local environments")
 		err = godotenv.Load(".env.local")
 	}
+
+	log.Print("connecting to database")
+	db, err := dbrepo.NewDBConn()
+	if err != nil {
+		return err
+	}
+	log.Print("database connected")
+
+	log.Print("connecting to collection database")
+	colDb, err := colrepo.NewColDBConn()
+	if err != nil {
+		return err
+	}
+	log.Print("collection database connected")
+
+	//Create a new service registry
+	sr := registry.NewServiceRegistry(db, colDb)
+	
+
 
 	return err
 }
