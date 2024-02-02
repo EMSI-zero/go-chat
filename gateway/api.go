@@ -76,5 +76,5 @@ func AddAdminRoutes(e *gin.Engine, c *rest.Controller) {
 	r := e.Group(fmt.Sprintf("/api/v1/%s", "admin"))
 	r.Use(c.HandleError())
 	r.Use(c.AuthController.Authenticate())
-	user.AddRoutes(r, c.UserController, c.AuthController.SetByPassPolicy)
+	user.AddRoutes(r, c, c.AuthController.SetByPassPolicy)
 }

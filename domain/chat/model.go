@@ -24,33 +24,34 @@ type UserConversation struct {
 	ConversationID int64     `json:"conversationID"`
 	Role           int32     `json:"role" gorm:"col:role_c"`
 	LastRead       time.Time `json:"lastRead"`
-	UnreadMessages int       `json:"unreadMessages"`
 	JoinedSince    time.Time `json:"joinedSince"`
 }
 
 type Message struct {
-	ID             int64     `json:"messageID" bson:"_id"`
-	ConversationID int64     `json:"conversationId" bson:"conversation_id"`
-	SenderID       int64     `json:"senderId" bson:"sender_id"`
-	Content        []byte    `json:"content" bson:"content"`
-	CreatedAt      time.Time `json:"createdAt" bson:"created_at,inline"`
-	EditedAt       time.Time `json:"editedAt" bson:"edited_at"`
+	ID             int64             `json:"messageID" bson:"_id"`
+	ConversationID int64             `json:"conversationId" bson:"conversation_id"`
+	SenderID       int64             `json:"senderId" bson:"sender_id"`
+	SenderName     string            `json:"senderName" bson:"sender_name"`
+	Content        map[string]string `json:"content" bson:"content"`
+	CreatedAt      time.Time         `json:"createdAt" bson:"created_at,inline"`
+	EditedAt       time.Time         `json:"editedAt" bson:"edited_at"`
 }
 
 // ---------------- DTOs ----------------
+
 type NewChatRequest struct {
 	ReceiverID int64
 }
 
 type ConversationSummary struct {
-	ID               int64       `json:"id"`
-	ConversationName string      `json:"conversationName"`
-	IsPrivate        bool        `json:"isPrivate"`
-	ImagePath        string      `json:"imagePath"`
-	LastRead         time.Time   `json:"lastRead"`
-	UnreadMessages   int         `json:"unreadMessages"`
-	LastMessage      MessageView `json:"lastMessage"`
-	LastUpdate       time.Time   `json:"lastUpdate"`
+	ID               int64     `json:"id"`
+	ConversationName string    `json:"conversationName"`
+	IsPrivate        bool      `json:"isPrivate"`
+	ImagePath        string    `json:"imagePath"`
+	LastRead         time.Time `json:"lastRead"`
+	UnreadMessages   int       `json:"unreadMessages" gorm:"-"`
+	LastMessage      Message   `json:"lastMessage" gorm:"-"`
+	LastUpdate       time.Time `json:"lastUpdate" gorm:"-"`
 }
 
 type ConversationInfo struct {
@@ -98,14 +99,4 @@ type RemoveMessageRequest struct {
 type EditMessageRequest struct {
 	ConversationID int64
 	MessageID      int64
-}
-
-type MessageView struct {
-	ID             int64     `json:"messageID"`
-	ConversationID int64     `json:"conversationId"`
-	SenderID       int64     `json:"senderId"`
-	SenderName     string    `json:"senderName"`
-	Content        []byte    `json:"content"`
-	CreatedAt      time.Time `json:"createdAt"`
-	EditedAt       time.Time `json:"editedAt"`
 }

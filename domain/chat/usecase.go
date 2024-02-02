@@ -9,9 +9,9 @@ type ChatService interface {
 	mustImplementBaseService()
 	CreatePrivateConversation(ctx context.Context, req *NewChatRequest) error
 	FetchConversations(ctx context.Context) ([]*ConversationSummary, error)
-	FetchContversation(ctx context.Context, id int64) ([]*MessageView, error)
+	FetchConversation(ctx context.Context, id int64) ([]*Message, error)
 	FetchContversationInfo(ctx context.Context, id int64) (*ConversationInfo, error)
-	RemovePrivateConversation(ctx context.Context, req *RemoveChatRequest) error
+	RemovePrivateConversation(ctx context.Context, id int64) error
 
 	CreateGroupConversation(ctx context.Context, req *NewGroupChatRequest) error
 	RemoveGroupConversation(ctx context.Context, req *LeaveGroupChatRequest) error
@@ -32,7 +32,7 @@ func (UnImplementedChatService) CreatePrivateConversation(ctx context.Context, r
 func (UnImplementedChatService) FetchConversations(ctx context.Context) ([]*ConversationSummary, error) {
 	return nil, fmt.Errorf("service not implemented")
 }
-func (UnImplementedChatService) FetchContversation(ctx context.Context, id int64) ([]*MessageView, error) {
+func (UnImplementedChatService) FetchConversation(ctx context.Context, id int64) ([]*Message, error) {
 	return nil, fmt.Errorf("service not implemented")
 }
 func (UnImplementedChatService) FetchContversationInfo(ctx context.Context, id int64) (*ConversationInfo, error) {

@@ -4,14 +4,18 @@ import (
 	"log"
 
 	"github.com/EMSI-zero/go-chat/controller/rest/auth"
+	"github.com/EMSI-zero/go-chat/controller/rest/chat"
+	"github.com/EMSI-zero/go-chat/controller/rest/contact"
 	"github.com/EMSI-zero/go-chat/controller/rest/user"
 	"github.com/EMSI-zero/go-chat/registry"
 	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
-	AuthController *auth.AuthController
-	UserController *user.UserController
+	AuthController    *auth.AuthController
+	UserController    *user.UserController
+	ContactController *contact.ContactController
+	ChatController    *chat.ChatController
 }
 
 func NewController(sr registry.ServiceRegistry) *Controller {
@@ -19,6 +23,8 @@ func NewController(sr registry.ServiceRegistry) *Controller {
 
 	controller.AuthController = auth.NewAuthController(sr)
 	controller.UserController = user.NewUserController(sr)
+	controller.ContactController = contact.NewContactController(sr)
+	controller.ChatController = chat.NewChatController(sr)
 
 	return controller
 }
