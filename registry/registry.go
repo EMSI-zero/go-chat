@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"github.com/EMSI-zero/go-chat/domain/chat"
 	"github.com/EMSI-zero/go-chat/domain/contact"
 	"github.com/EMSI-zero/go-chat/domain/user"
 	"github.com/EMSI-zero/go-chat/infra/colrepo"
@@ -17,6 +18,9 @@ type ServiceRegistry interface {
 
 	GetContactService() contact.ContactService
 	RegisterContactService(contact.ContactService)
+
+	GetChatService() chat.ChatService
+	RegisterChatService(chat.ChatService)
 }
 
 type serviceRegistry struct {
@@ -32,6 +36,7 @@ func (sr *serviceRegistry) mustImplementBaseRegistry() {}
 type serviceMap struct {
 	userService    user.UserService
 	contactService contact.ContactService
+	chatService    chat.ChatService
 }
 
 func NewServiceRegistry(db dbrepo.DBConn, colDB colrepo.ColDBConn) *serviceRegistry {
@@ -64,4 +69,12 @@ func (sr *serviceRegistry) GetContactService() contact.ContactService {
 
 func (sr *serviceRegistry) RegisterContactService(cs contact.ContactService) {
 	sr.services.contactService = cs
+}
+
+func (sr *serviceRegistry) GetChatService() chat.ChatService {
+	return sr.services.chatService
+}
+
+func (sr *serviceRegistry) RegisterChatService(cs chat.ChatService) {
+	sr.services.chatService = cs
 }
