@@ -15,13 +15,13 @@ type UserService struct {
 	db dbrepo.DBConn
 }
 
-func NewUserService(registry registry.ServiceRegistry) *UserService {
-	return &UserService{
+func NewUserService(registry registry.ServiceRegistry) {
+	registry.RegisterUserService(&UserService{
 		db: registry.GetDB(),
-	}
+	})
 }
 
-func (us *UserService) Register(ctx context.Context, req user.RegisterRequest) error {
+func (us *UserService) Register(ctx context.Context, req *user.RegisterRequest) error {
 	db, err := us.db.GetConn(ctx)
 	if err != nil {
 		return nil
