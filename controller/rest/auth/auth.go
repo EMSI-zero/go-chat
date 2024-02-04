@@ -20,6 +20,7 @@ type AuthController struct {
 func NewAuthController(sr registry.ServiceRegistry) *AuthController {
 	return &AuthController{
 		userService: sr.GetUserService(),
+		authByPass: make(map[string]bool),
 	}
 }
 

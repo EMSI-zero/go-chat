@@ -7,7 +7,7 @@ CREATE ROLE admin WITH
     SUPERUSER
     PASSWORD 'admin';
 
-CREATE ROLE api_service_dev WITH
+CREATE ROLE gc_api_service WITH
     LOGIN
     NOSUPERUSER
     INHERIT
@@ -16,9 +16,9 @@ CREATE ROLE api_service_dev WITH
     NOREPLICATION
     PASSWORD 'gc-api-service';
 
-ALTER ROLE api_service_dev SET search_path TO gochat_db;
+ALTER ROLE gc_api_service SET search_path TO gochat_db;
 
 \connect gochat_db
 
 CREATE SCHEMA gochat_db
-AUTHORIZATION api_service_dev;
+AUTHORIZATION gc_api_service;

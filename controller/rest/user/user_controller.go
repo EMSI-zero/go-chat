@@ -21,7 +21,7 @@ func NewUserController(sr registry.ServiceRegistry) *UserController {
 func (uc *UserController) Register(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var req *user.RegisterRequest
+	req:= new(user.RegisterRequest)
 	err := c.Bind(req)
 	if err != nil {
 		httputils.NewError(c, http.StatusBadRequest, err)
