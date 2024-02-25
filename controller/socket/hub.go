@@ -4,16 +4,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-
-	"github.com/gorilla/websocket"
 )
-
-type Client struct {
-	ID     uuid.UUID
-	UserID int64
-	conn   *websocket.Conn
-	send   chan string
-}
 
 type Hub struct {
 	clients     map[int64]map[uuid.UUID]*Client
@@ -32,7 +23,7 @@ func NewHub() *Hub {
 	}
 }
 
-func (hub *Hub) InitSocketHub() {
+func (hub *Hub) Run() {
 	for {
 		select {
 		case client := <-hub.register:
@@ -61,48 +52,4 @@ func (hub *Hub) InitSocketHub() {
 			hub.clientsLock.Unlock()
 		}
 	}
-}
-
-func (client *Client) read(hub *Hub) {
-	defer func() {
-		hub.unregister <- client
-		client.conn.Close()
-	}()
-
-	for {
-		t, message, err := client.conn.ReadMessage()
-		if err != nil {
-			break
-		}
-
-		if t != websocket.TextMessage {
-			break
-		}
-	}
-}
-
-func (client *Client) write() {
-	defer func() {
-		client.conn.Close()
-	}()
-
-	for message := range client.send {
-		err := websocket.Message.Send(client.conn, message)
-		if err != nil {
-			break
-		}
-	}
-}
-
-func handleWebSocket(hub *Hub, ws *websocket.Conn) {
-	client := &Client{
-		ID: uuid.NewSHA1(),
-		conn: ws,
-		send: make(chan string),
-	}
-
-	hub.register <- client
-
-	go client.read(hub)
-	go client.write()
 }
