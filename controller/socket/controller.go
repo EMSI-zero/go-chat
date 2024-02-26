@@ -5,11 +5,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/EMSI-zero/go-chat/domain/user"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
-func HandleTokenAuthentication(c *gin.Context) {
+type SocketController struct {
+	socketHub *Hub
+	upgrader  websocket.Upgrader
+}
+
+func (sc *SocketController) HandleTokenAuthentication(c *gin.Context) {
 	// Generate a temporary external authentication token
 	externalAuthToken, err := generateTemporaryToken()
 	if err != nil {
@@ -26,7 +31,9 @@ func HandleTokenAuthentication(c *gin.Context) {
 	c.String(http.StatusOK, externalAuthToken.Token)
 }
 
-func handleWebSocket(hub *Hub, c *gin.Context) {
+func (sc *SocketController) HandleWebSocket(hub *Hub, c *gin.Context) {
+	ctx := c.Request.Context()
+
 	// Extract external authentication token from the query parameters
 	externalAuthToken := c.Query("token")
 	if externalAuthToken == "" {
@@ -44,18 +51,11 @@ func handleWebSocket(hub *Hub, c *gin.Context) {
 		return
 	}
 
-	userId, err := user.GetUserFromCtx(ctx)
-	if err != nil {
-		return
-	}
-
-
-	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	ws, err := sc.upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println("Error upgrading to WebSocket:", err)
 		return
 	}
 
-	
-	wsHandler.ServeHTTP(c.Writer, c.Request)
+	NewClientSocket(ctx, hub, ws)
 }

@@ -1,8 +1,10 @@
 package socket
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/EMSI-zero/go-chat/domain/user"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -14,7 +16,7 @@ type Client struct {
 	send   chan string
 }
 
-func (client *Client) read(hub *Hub) {
+func (client *Client) read(ctx context.Context, hub *Hub) {
 	defer func() {
 		hub.unregister <- client
 		client.conn.Close()
@@ -48,16 +50,23 @@ func (client *Client) write() {
 	}
 }
 
-func NewClientSocket(hub *Hub, ws *websocket.Conn) {
+func NewClientSocket(ctx context.Context, hub *Hub, ws *websocket.Conn) {
 	//Generate and Accept New Web socket by validating the ticket
+
+	userId, err := user.GetUserFromCtx(ctx)
+	if err != nil {
+		return
+	}
+
 	client := &Client{
-		ID:   uuid.New(),
-		conn: ws,
-		send: make(chan string),
+		ID:     uuid.New(),
+		UserID: userId,
+		conn:   ws,
+		send:   make(chan string),
 	}
 
 	hub.register <- client
 
-	go client.read(hub)
+	go client.read(ctx, hub)
 	go client.write()
 }

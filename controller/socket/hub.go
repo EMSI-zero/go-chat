@@ -12,6 +12,7 @@ type Hub struct {
 	register    chan *Client
 	unregister  chan *Client
 	clientsLock sync.Mutex
+	//dviceService
 }
 
 func NewHub() *Hub {
